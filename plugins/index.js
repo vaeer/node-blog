@@ -7,7 +7,7 @@ const path = require('path');
 const fs = require('fs');
 
 // plugins文件夹下的所有插件,并去掉后缀名
-const files = fs.readdirSync('./src/plugins')
+const files = fs.readdirSync('./plugins')
     .filter(file => !file.includes('index'))
     .map(file => file.substring(0, file.indexOf(".")))
 

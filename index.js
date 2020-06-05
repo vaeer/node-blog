@@ -6,19 +6,23 @@
 const Koa = require('koa');
 const koaStatic = require('koa-static');
 const path = require('path');
-const loadPlugins = require('./src/plugins');
+const loadPlugins = require('./plugins');
 
 const PORT = process.env.PORT || 4000;
 
 const app = new Koa();
-const router = require('./src/routes');
+const router = require('./routes');
 
-app.use(koaStatic(path.join(__dirname, './src/public')));
+app.use(koaStatic(path.join(__dirname, './public')));
 
 // 加载中间件
 loadPlugins(app);
 
 app.use(router.routes(), router.allowedMethods());
+
+router.get('/', async ctx => {
+    await ctx.render('index');
+});
 
 app.listen(PORT, () => {
     console.log(`正在监听${PORT}端口`);
