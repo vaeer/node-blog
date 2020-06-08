@@ -20,10 +20,6 @@ loadPlugins(app);
 
 app.use(router.routes(), router.allowedMethods());
 
-router.get('/', async ctx => {
-    await ctx.render('index');
-});
-
 app.listen(PORT, () => {
     console.log(`正在监听${PORT}端口`);
 });
