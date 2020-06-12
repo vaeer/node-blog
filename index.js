@@ -6,7 +6,7 @@
 const Koa = require('koa');
 const koaStatic = require('koa-static');
 const path = require('path');
-const loadPlugins = require('./plugins');
+const loadMiddlewares = require('./middlewares');
 
 const PORT = process.env.PORT || 4000;
 
@@ -16,7 +16,7 @@ const router = require('./routes');
 app.use(koaStatic(path.join(__dirname, './public')));
 
 // 加载中间件
-loadPlugins(app);
+loadMiddlewares(app);
 
 app.use(router.routes(), router.allowedMethods());
 

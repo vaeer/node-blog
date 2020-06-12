@@ -6,18 +6,18 @@
 const path = require('path');
 const fs = require('fs');
 
-// plugins文件夹下的所有插件,并去掉后缀名
-const files = fs.readdirSync('./plugins')
+// middlewares文件夹下的所有插件,并去掉后缀名
+const files = fs.readdirSync('./middlewares')
     .filter(file => !file.includes('index'))
     .map(file => file.substring(0, file.indexOf(".")))
 
 // 插件加载顺序
-const plugins = [
+const middlewares = [
     'x-response-time'
 ];
 
-const pluginsLoad = app => {
-    plugins.forEach((plugin, index) => {
+const loadMiddlewares = app => {
+    middlewares.forEach((plugin, index) => {
         console.log(`正在加载第${++index}个插件：${plugin}`);
         try {
             // 如果是自定义中间件
@@ -33,4 +33,4 @@ const pluginsLoad = app => {
     });
 };
 
-module.exports = pluginsLoad;
+module.exports = loadMiddlewares;
