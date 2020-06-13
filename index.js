@@ -7,6 +7,7 @@ const Koa = require('koa');
 const koaStatic = require('koa-static');
 const path = require('path');
 const loadMiddlewares = require('./middlewares');
+const db = require('./database');
 
 const PORT = process.env.PORT || 4000;
 
