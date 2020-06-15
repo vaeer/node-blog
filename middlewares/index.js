@@ -1,5 +1,5 @@
 /**
- * @file plugin文件，按照数组顺序加载
+ * @file 自定义plugin文件，按照数组顺序加载
  * @author vaer
  */
 

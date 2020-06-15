@@ -5,7 +5,7 @@ const devConfig = require('../config/config.dev');
 const prodConfig = require('../config/config.prod');
 
 const { mongodbUrl } = env === 'development' ? devConfig : prodConfig;
-const db = mongoose.connect(mongodbUrl, err => {
+const db = mongoose.connect(mongodbUrl, { keepAlive: 120 }, err => {
     if (err) {
         console.log(err);
     } else {

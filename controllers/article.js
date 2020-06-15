@@ -10,7 +10,10 @@ const { handleError, handleSuccess } = require('../utils/utils');
 const get = async ctx => {
     const { request: { query } } = ctx;
     try {
-        const params = _.pick(query, ['title']);
+        const { title, content, date} = query;
+        const params = {
+            title: new RegExp(title, 'i')
+        };
         const result = await Article.find(params);
         const list = result.map(item => ({
                 title: item.title || '',
@@ -19,6 +22,7 @@ const get = async ctx => {
                 date: item.date || new Date(),
                 comments: item.comments || []
             }));
+        console.log('....', err, list);
         return handleSuccess({
             data: {
                 list: list || [],
@@ -36,9 +40,9 @@ const get = async ctx => {
 };
 
 const save = async ctx => {
-    const { request: { query } } = ctx;
+    const { request: { body } } = ctx;
     try {
-        const params = _.pick(query, ['title', 'content', 'labels', 'date', 'comments']);
+        const params = _.pick(body, ['title', 'content', 'labels', 'date', 'comments']);
         const article = new Article(params);
         const result = await article.save();
         return handleSuccess({
@@ -46,15 +50,26 @@ const save = async ctx => {
             data: true
         });
     } catch (e) {
+        const message = e.message || '保存失败';
         return handleError({
-            message: '保存失败',
+            message,
             stack: e,
             data: false
         });
     }
 };
 
+const update = async ctx => {
+
+};
+
+const del = async ctx => {
+
+};
+
 module.exports = {
     get,
-    save
+    save,
+    update,
+    del
 };

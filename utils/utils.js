@@ -10,7 +10,7 @@ const handleSuccess = params => ({
 });
 
 const handleError = params => ({
-    status: params || 500,
+    status: params.status || 500,
     message: params.message || '',
     stack: params.stack || null,
     data: params.data || null

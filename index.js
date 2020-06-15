@@ -5,6 +5,7 @@
 
 const Koa = require('koa');
 const koaStatic = require('koa-static');
+const bodyParser = require('koa-bodyparser');
 const path = require('path');
 const loadMiddlewares = require('./middlewares');
 const db = require('./database');
@@ -15,6 +16,7 @@ const app = new Koa();
 const router = require('./routes');
 
 app.use(koaStatic(path.join(__dirname, './public')));
+app.use(bodyParser());
 
 // 加载中间件
 loadMiddlewares(app);
