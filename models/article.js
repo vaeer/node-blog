@@ -20,7 +20,16 @@ const Article = new Schema({
         default: moment().format('YYYY-MM-DD HH:MM')
     },
     comments: [
-        { content: String, date: String }
+        {
+            content: {
+                type: String,
+
+            },
+            date: {
+                type: String,
+                default: moment().format('YYYY-MM-DD HH:MM')
+            }
+        }
     ]
 });
 
