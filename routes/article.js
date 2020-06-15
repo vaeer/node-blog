@@ -33,7 +33,7 @@ router.post('/update', async ctx => {
     ctx.body = result;
 });
 
-router.post('/del', async ctx => {
+router.post('/delete', async ctx => {
     const result = await del(ctx);
     ctx.body = result;
 });

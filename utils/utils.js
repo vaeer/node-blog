@@ -16,7 +16,13 @@ const handleError = params => ({
     data: params.data || null
 });
 
+// 正则字符转义
+const escapeRegex = (text = '') => {
+    return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
+};
+
 module.exports = {
     handleSuccess,
-    handleError
+    handleError,
+    escapeRegex
 };
