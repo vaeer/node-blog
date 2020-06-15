@@ -1,8 +1,9 @@
 /**
- * @file 数据库操作
+ * @file article部分接口逻辑
  * @author vaer
  */
 const Article = require('../models/article');
+const Label = require('../models/label');
 const _ = require('lodash');
 const moment = require('moment');
 const { handleError, handleSuccess, escapeRegex } = require('../utils/utils');
