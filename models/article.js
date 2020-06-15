@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const dayjs = require('dayjs');
 
 const Article = new Schema({
     title: { type: String, default: '' },

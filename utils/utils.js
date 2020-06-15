@@ -3,20 +3,17 @@
  * @author vaer
  */
 
-const errorCodes = {
-
-}
-
-const handleSuccess = result => ({
+const handleSuccess = params => ({
     status: 0,
-    message: '',
-    data: result
+    message: params.message || '',
+    data: params.data
 });
 
-const handleError = err => ({
-    status: errorCode,
-    message: errorCodes[err],
-    data: null
+const handleError = params => ({
+    status: params || 500,
+    message: params.message || '',
+    stack: params.stack || null,
+    data: params.data || null
 });
 
 module.exports = {

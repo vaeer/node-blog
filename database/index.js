@@ -1,9 +1,11 @@
 const mongoose = require('mongoose');
 
 const env = process.env.NODE_ENV;
-const config = require('../config/config.dev');
+const devConfig = require('../config/config.dev');
+const prodConfig = require('../config/config.prod');
 
-const db = mongoose.connect(config.mongodbUrl, err => {
+const { mongodbUrl } = env === 'development' ? devConfig : prodConfig;
+const db = mongoose.connect(mongodbUrl, err => {
     if (err) {
         console.log(err);
     } else {
