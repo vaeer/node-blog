@@ -9,13 +9,19 @@ const {
     get,
     save,
     del,
-    update
+    update,
+    search
 } = require('../controllers/article');
 
-router.get('/get', async ctx => {
+router.post('/get', async ctx => {
     const result = await get(ctx);
     ctx.body = result;
 });
+
+router.post('/search', async ctx => {
+    const result = await search(ctx);
+    ctx.body = result;
+})
 
 router.post('/save', async ctx => {
     const result = await save(ctx);

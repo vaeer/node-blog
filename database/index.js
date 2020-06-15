@@ -5,6 +5,7 @@ const devConfig = require('../config/config.dev');
 const prodConfig = require('../config/config.prod');
 
 const { mongodbUrl } = env === 'development' ? devConfig : prodConfig;
+mongoose.set('useCreateIndex', true);
 const db = mongoose.connect(mongodbUrl, { keepAlive: 120 }, err => {
     if (err) {
         console.log(err);

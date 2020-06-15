@@ -4,31 +4,37 @@
  */
 const Article = require('../models/article');
 const _ = require('lodash');
+const moment = require('moment');
 const { handleError, handleSuccess } = require('../utils/utils');
 
-
+// 获取文章列表
 const get = async ctx => {
-    const { request: { query } } = ctx;
+    const { request: { body } } = ctx;
     try {
-        const { title, content, date} = query;
+        const { title, pageNo, pageSize } = body;
+        // 模糊匹配
         const params = {
             title: new RegExp(title, 'i')
         };
-        const result = await Article.find(params);
+        // 分页，时间倒序
+        const result = await Article.find(params)
+            .limit(pageSize)
+            .skip((pageNo - 1) * pageSize)
+            .sort({date: -1});
+        const total = await Article.countDocuments();
         const list = result.map(item => ({
                 title: item.title || '',
                 content: item.content || '',
                 labels: item.labels || [],
-                date: item.date || new Date(),
+                date: item.date || moment().format('YYYY-MM-DD'),
                 comments: item.comments || []
             }));
-        console.log('....', err, list);
         return handleSuccess({
             data: {
                 list: list || [],
-                total: result.length || 0,
-                pageNo: 1,
-                pageSize: 1
+                total: total || 0,
+                pageNo: pageNo,
+                pageSize: pageSize
             }
         });
     } catch (e) {
@@ -39,6 +45,26 @@ const get = async ctx => {
     }
 };
 
+// 全局搜索
+const search = async ctx => {
+    const { request: { body } } = ctx;
+    try {
+        const params = _.pick(body, ['keyword']);
+        const list = Article.find(params).sort({_id: -1});
+        return handleSuccess({
+            data: {
+                list: list || []
+            }
+        });
+    } catch (e) {
+        return handleError({
+            message: '获取列表失败',
+            stack: e
+        });
+    }
+};
+
+// 保存文章
 const save = async ctx => {
     const { request: { body } } = ctx;
     try {
@@ -59,16 +85,19 @@ const save = async ctx => {
     }
 };
 
+// 更新文章
 const update = async ctx => {
 
 };
 
+// 删除文章
 const del = async ctx => {
 
 };
 
 module.exports = {
     get,
+    search,
     save,
     update,
     del
