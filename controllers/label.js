@@ -10,8 +10,14 @@ const { handleError, handleSuccess, escapeRegex } = require('../utils/utils');
 // 获取labels数组
 const get = async ctx => {
     try {
-
+        return handleSuccess({
+            data: ['react', 'js']
+        });
     } catch (e) {
 
     }
+};
+
+module.exports = {
+    get
 };

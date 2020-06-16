@@ -22,8 +22,7 @@ const Article = new Schema({
     comments: [
         {
             content: {
-                type: String,
-
+                type: String
             },
             date: {
                 type: String,

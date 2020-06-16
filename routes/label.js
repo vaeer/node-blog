@@ -4,7 +4,6 @@
  */
 const Router = require('koa-router');
 const router = new Router();
-
 const {
     get
 } = require('../controllers/label');
