@@ -12,17 +12,21 @@ const { handleError, handleSuccess, escapeRegex } = require('../utils/utils');
 const get = async ctx => {
     const { request: { body } } = ctx;
     try {
-        const { title = '', pageNo = 1, pageSize = 10} = body;
-        // 模糊匹配
-        const params = {
-            title: new RegExp(escapeRegex(title), 'i')
-        };
+        const { pageNo = 1, pageSize = 10, keywords} = body;
+        // 传keyword时为全局搜索，不传时为获取全部内容
+        const params = keywords
+            ? {
+                $or: [
+                    { title: new RegExp(escapeRegex(keywords), 'i') },
+                    { content: new RegExp(escapeRegex(keywords), 'i') }
+                ]
+            } : {}
         // 分页，时间倒序
         const result = await Article.find(params)
             .limit(pageSize)
             .skip((pageNo - 1) * pageSize)
             .sort({date: -1});
-        const total = await Article.countDocuments();
+        const total = await Article.countDocuments(params);
         const list = result.map(item => ({
                 title: item.title || '',
                 content: item.content || '',
@@ -76,11 +80,11 @@ const detail = async ctx => {
 const search = async ctx => {
     const { request: { body } } = ctx;
     try {
-        const { keyword = '' } = body;
+        const { keywords = '' } = body;
         const params = {
             $or: [
-                { title: new RegExp(escapeRegex(keyword), 'i') },
-                { content: new RegExp(escapeRegex(keyword), 'i') }
+                { title: new RegExp(escapeRegex(keywords), 'i') },
+                { content: new RegExp(escapeRegex(keywords), 'i') }
             ]
         };
         const list = await Article.find(params, { title: 1, content: 1, _id: 0});
@@ -124,8 +128,8 @@ const update = async ctx => {
     const { request: { body } } = ctx;
     try {
         const { uid, ...update } = body;
-        const result = await Article.updateOne({ uid }, { $set: update });
-        if (result.ok) {
+        const result = await Article.updateOne({ _id: uid }, { $set: update });
+        if (result.ok && result.nModified) {
             return handleSuccess({
                 message: '修改成功',
                 data: true
@@ -150,9 +154,9 @@ const update = async ctx => {
 const del = async ctx => {
     const { request: { body } } = ctx;
     try {
-        const params = _.pick(body, ['uid']);
-        const result = await Article.deleteOne(params);
+        const result = await Article.deleteOne({_id: body.uid});
         if (result.ok && result.deletedCount) {
+            console.log(result);
             return handleSuccess({
                 message: '修改成功',
                 data: true
