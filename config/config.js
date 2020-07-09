@@ -4,5 +4,5 @@
  */
 
 module.exports = {
-    
+    whiteList: ['/', '/about', '/news']
 }

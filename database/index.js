@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const env = process.env.NODE_ENV;
 const devConfig = require('../config/config.dev');
-const prodConfig = require('../config/config.prod');
+const prodConfig = require('../config/config');
 
 const { mongodbUrl } = env === 'development' ? devConfig : prodConfig;
 mongoose.set('useCreateIndex', true);

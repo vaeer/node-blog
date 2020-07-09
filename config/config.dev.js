@@ -4,5 +4,6 @@
  */
 
 module.exports = {
-    mongodbUrl: 'mongodb://localhost/blog'
+    mongodbUrl: 'mongodb://localhost/blog',
+    whiteList: ['/', '/about', '/news']
 }

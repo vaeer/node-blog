@@ -13,6 +13,8 @@ const files = fs.readdirSync('./middlewares')
 
 // 插件加载顺序
 const middlewares = [
+    'history-api-fallback',
+    '404',
     'x-response-time'
 ];
 
