@@ -7,6 +7,7 @@ const router = new Router();
 
 const {
     get,
+    getByLabel,
     save,
     del,
     update,
@@ -15,33 +16,31 @@ const {
 } = require('../controllers/article');
 
 router.post('/get', async ctx => {
-    const result = await get(ctx);
-    ctx.body = result;
+    ctx.body = await get(ctx);
+});
+
+router.post('getByLabel', async ctx => {
+    ctx.body = await getByLabel(ctx);
 });
 
 router.post('/search', async ctx => {
-    const result = await search(ctx);
-    ctx.body = result;
+    ctx.body = await search(ctx);
 });
 
 router.post('/detail', async ctx => {
-    const result = await detail(ctx);
-    ctx.body = result;
+    ctx.body = await detail(ctx);
 });
 
 router.post('/save', async ctx => {
-    const result = await save(ctx);
-    ctx.body = result;
+    ctx.body = await save(ctx);
 });
 
 router.post('/update', async ctx => {
-    const result = await update(ctx);
-    ctx.body = result;
+    ctx.body = await update(ctx);
 });
 
 router.post('/delete', async ctx => {
-    const result = await del(ctx);
-    ctx.body = result;
+    ctx.body = await del(ctx);
 });
 
 module.exports = router.routes();

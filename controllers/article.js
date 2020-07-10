@@ -29,7 +29,7 @@ const get = async ctx => {
         const total = await Article.countDocuments(params);
         const list = result.map(item => ({
                 title: item.title || '',
-                content: item.content || '',
+                content: item.content.slice(0, 120) || '',
                 labels: item.labels || [],
                 date: item.date || moment().format('YYYY-MM-DD'),
                 uid: item._id
@@ -49,6 +49,11 @@ const get = async ctx => {
             stack: e
         });
     }
+};
+
+// 根据标签获取文章
+const getByLabel = async ctx => {
+
 };
 
 // 获取文章详情
@@ -179,6 +184,7 @@ const del = async ctx => {
 
 module.exports = {
     get,
+    getByLabel,
     search,
     detail,
     save,
