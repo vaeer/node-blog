@@ -19,7 +19,7 @@ router.post('/get', async ctx => {
     ctx.body = await get(ctx);
 });
 
-router.post('getByLabel', async ctx => {
+router.post('/getByLabel', async ctx => {
     ctx.body = await getByLabel(ctx);
 });
 

@@ -53,7 +53,28 @@ const get = async ctx => {
 
 // 根据标签获取文章
 const getByLabel = async ctx => {
-
+    const { request: { body } } = ctx;
+    const { label } = body;
+    try {
+        let list = await Article.find();
+        list = list.filter(item => Array.isArray(item.labels) && item.labels.includes(label))
+            .map(item => ({
+                title: item.title || '',
+                content: item.content.slice(0, 120) || '',
+                labels: item.labels || [],
+                date: item.date || moment().format('YYYY-MM-DD'),
+                uid: item._id
+            }));
+        return handleSuccess({
+            data: list || []
+        });
+    } catch (e) {
+        const message = e.message || '获取列表失败';
+        return handleError({
+            message,
+            stack: e
+        });
+    }
 };
 
 // 获取文章详情
