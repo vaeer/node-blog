@@ -8,9 +8,10 @@ const koaStatic = require('koa-static');
 const bodyParser = require('koa-bodyparser');
 const path = require('path');
 const loadMiddlewares = require('./middlewares');
-require('./database');
 const debug = require('debug')('http');
-
+const moment = require('moment');
+require('./database');
+moment().utcOffset(8).format();
 const PORT = process.env.PORT || 4000;
 
 const app = new Koa();

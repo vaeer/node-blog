@@ -6,7 +6,7 @@ const Article = require('../models/article');
 const _ = require('lodash');
 const moment = require('moment');
 const { handleError, handleSuccess, escapeRegex, removeHtml } = require('../utils/utils');
-const { addLabels } = require('../controllers/label');
+const { addLabels, delLabels } = require('../controllers/label');
 
 // 获取文章列表
 const getArticles = async ctx => {
@@ -186,11 +186,15 @@ const updateArticle = async ctx => {
 // 删除文章
 const delArticle = async ctx => {
     const { request: { body } } = ctx;
+    const { uid } = body;
     try {
-        const result = await Article.deleteOne({_id: body.uid});
-        if (result.ok && result.deletedCount) {
+        const labels = (await Article.findById(uid)).labels || [];
+        const result = await Article.deleteOne({ _id: uid });
+        // 删除label
+        const delLabelRes = await delLabels(ctx, labels);
+        if (result.ok && result.deletedCount && delLabelRes.status === 0) {
             return handleSuccess({
-                message: '修改成功',
+                message: '删除成功',
                 data: true
             });
         } else {
