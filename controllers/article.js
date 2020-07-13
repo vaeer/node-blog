@@ -6,12 +6,12 @@ const Article = require('../models/article');
 const _ = require('lodash');
 const moment = require('moment');
 const { handleError, handleSuccess, escapeRegex, removeHtml } = require('../utils/utils');
-const { addLabels, delLabels } = require('../controllers/label');
+const { addLabels, delLabels, updateLabels } = require('../controllers/label');
 
 // 获取文章列表
 const getArticles = async ctx => {
-    const { request: { body } } = ctx;
     try {
+        const { request: { body } } = ctx;
         const { pageNo = 1, pageSize = 10, keywords} = body;
         // 传keyword时为全局搜索，不传时为获取全部内容
         const params = keywords
@@ -53,9 +53,9 @@ const getArticles = async ctx => {
 
 // 根据标签获取文章
 const getArticlesByLabel = async ctx => {
-    const { request: { body } } = ctx;
-    const { label } = body;
     try {
+        const { request: { body } } = ctx;
+        const { label } = body;
         let list = await Article.find();
         list = list.filter(item => Array.isArray(item.labels) && item.labels.includes(label))
             .map(item => ({
@@ -82,8 +82,8 @@ const getArticlesByLabel = async ctx => {
 
 // 获取文章详情
 const getDetail = async ctx => {
-    const { request: { body } } = ctx;
     try {
+        const { request: { body } } = ctx;
         const { uid } = body;
         const result = await Article.findById(uid);
         const { labels, date, title, content, comments } = result;
@@ -107,8 +107,8 @@ const getDetail = async ctx => {
 
 // 全局搜索
 const searchArticles = async ctx => {
-    const { request: { body } } = ctx;
     try {
+        const { request: { body } } = ctx;
         const { keywords = '' } = body;
         const params = {
             $or: [
@@ -133,8 +133,8 @@ const searchArticles = async ctx => {
 
 // 保存文章
 const saveArticle = async ctx => {
-    const { request: { body } } = ctx;
     try {
+        const { request: { body } } = ctx;
         const params = _.pick(body, ['title', 'content', 'labels', 'date', 'comments']);
         const article = new Article(params);
         await article.save();
@@ -158,11 +158,13 @@ const saveArticle = async ctx => {
 
 // 更新文章
 const updateArticle = async ctx => {
-    const { request: { body } } = ctx;
     try {
+        const { request: { body } } = ctx;
         const { uid, ...update } = body;
+        const labels = (await Article.findById(uid)).labels || [];
         const result = await Article.updateOne({ _id: uid }, { $set: update });
-        if (result.ok && result.nModified) {
+        const updateRes = await updateLabels(ctx, labels);
+        if (result.ok && result.nModified && updateRes.status === 0) {
             return handleSuccess({
                 message: '修改成功',
                 data: true
@@ -185,9 +187,9 @@ const updateArticle = async ctx => {
 
 // 删除文章
 const delArticle = async ctx => {
-    const { request: { body } } = ctx;
-    const { uid } = body;
     try {
+        const { request: { body } } = ctx;
+        const { uid } = body;
         const labels = (await Article.findById(uid)).labels || [];
         const result = await Article.deleteOne({ _id: uid });
         // 删除label
