@@ -5,7 +5,7 @@
 const Article = require('../models/article');
 const _ = require('lodash');
 const moment = require('moment');
-const { handleError, handleSuccess, escapeRegex } = require('../utils/utils');
+const { handleError, handleSuccess, escapeRegex, removeHtml } = require('../utils/utils');
 const { addLabels } = require('../controllers/label');
 
 // 获取文章列表
@@ -29,7 +29,7 @@ const getArticles = async ctx => {
         const total = await Article.countDocuments(params);
         const list = result.map(item => ({
                 title: item.title || '',
-                content: item.content.slice(0, 120) || '',
+                content: removeHtml(item.content.slice(0, 200)) || '',
                 labels: item.labels || [],
                 date: item.date || moment().format('YYYY-MM-DD'),
                 uid: item._id
