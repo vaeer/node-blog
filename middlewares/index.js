@@ -3,8 +3,8 @@
  * @author vaer
  */
 
-const path = require('path');
 const fs = require('fs');
+const debug = require('debug')('middleware');
 
 // middlewares文件夹下的所有插件,并去掉后缀名
 const files = fs.readdirSync('./middlewares')
@@ -13,6 +13,7 @@ const files = fs.readdirSync('./middlewares')
 
 // 插件加载顺序
 const middlewares = [
+    'debug',
     'history-api-fallback',
     '404',
     'x-response-time'
@@ -20,7 +21,7 @@ const middlewares = [
 
 const loadMiddlewares = app => {
     middlewares.forEach((plugin, index) => {
-        console.log(`正在加载第${++index}个插件：${plugin}`);
+        debug(`正在加载第${++index}个插件：${plugin}`);
         try {
             // 如果是自定义中间件
             if (files.includes(plugin)) {                
@@ -30,7 +31,7 @@ const loadMiddlewares = app => {
                 app.use(require(plugin));
             }
         } catch (e) {
-            console.log(e);
+            debug(e);
         }
     });
 };

@@ -11,5 +11,4 @@ router.prefix(isDev ? '/mock': '');
 router.use('/article', router_article);
 router.use('/label', router_label);
 
-
 module.exports = router;
