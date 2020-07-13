@@ -3,13 +3,13 @@
  * @author vaer
  */
 const Article = require('../models/article');
-const Label = require('../models/label');
 const _ = require('lodash');
 const moment = require('moment');
 const { handleError, handleSuccess, escapeRegex } = require('../utils/utils');
+const { addLabels } = require('../controllers/label');
 
 // 获取文章列表
-const get = async ctx => {
+const getArticles = async ctx => {
     const { request: { body } } = ctx;
     try {
         const { pageNo = 1, pageSize = 10, keywords} = body;
@@ -52,7 +52,7 @@ const get = async ctx => {
 };
 
 // 根据标签获取文章
-const getByLabel = async ctx => {
+const getArticlesByLabel = async ctx => {
     const { request: { body } } = ctx;
     const { label } = body;
     try {
@@ -66,7 +66,10 @@ const getByLabel = async ctx => {
                 uid: item._id
             }));
         return handleSuccess({
-            data: list || []
+            data: {
+                list: list || [],
+                total: list.length || 0
+            }
         });
     } catch (e) {
         const message = e.message || '获取列表失败';
@@ -78,7 +81,7 @@ const getByLabel = async ctx => {
 };
 
 // 获取文章详情
-const detail = async ctx => {
+const getDetail = async ctx => {
     const { request: { body } } = ctx;
     try {
         const { uid } = body;
@@ -103,7 +106,7 @@ const detail = async ctx => {
 }
 
 // 全局搜索
-const search = async ctx => {
+const searchArticles = async ctx => {
     const { request: { body } } = ctx;
     try {
         const { keywords = '' } = body;
@@ -129,16 +132,20 @@ const search = async ctx => {
 };
 
 // 保存文章
-const save = async ctx => {
+const saveArticle = async ctx => {
     const { request: { body } } = ctx;
     try {
         const params = _.pick(body, ['title', 'content', 'labels', 'date', 'comments']);
         const article = new Article(params);
         await article.save();
-        return handleSuccess({
-            message: '保存成功',
-            data: true
-        });
+        // 添加标签
+        const addLabelRes = await addLabels(ctx);
+        if (addLabelRes.status === 0) {
+            return handleSuccess({
+                message: '保存成功',
+                data: true
+            });
+        }
     } catch (e) {
         const message = e.message || '保存失败';
         return handleError({
@@ -150,7 +157,7 @@ const save = async ctx => {
 };
 
 // 更新文章
-const update = async ctx => {
+const updateArticle = async ctx => {
     const { request: { body } } = ctx;
     try {
         const { uid, ...update } = body;
@@ -177,12 +184,11 @@ const update = async ctx => {
 };
 
 // 删除文章
-const del = async ctx => {
+const delArticle = async ctx => {
     const { request: { body } } = ctx;
     try {
         const result = await Article.deleteOne({_id: body.uid});
         if (result.ok && result.deletedCount) {
-            console.log(result);
             return handleSuccess({
                 message: '修改成功',
                 data: true
@@ -204,11 +210,11 @@ const del = async ctx => {
 };
 
 module.exports = {
-    get,
-    getByLabel,
-    search,
-    detail,
-    save,
-    update,
-    del
+    getArticles,
+    getArticlesByLabel,
+    searchArticles,
+    getDetail,
+    saveArticle,
+    updateArticle,
+    delArticle
 };

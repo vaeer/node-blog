@@ -6,41 +6,41 @@ const Router = require('koa-router');
 const router = new Router();
 
 const {
-    get,
-    getByLabel,
-    save,
-    del,
-    update,
-    search,
-    detail
+    getArticles,
+    getArticlesByLabel,
+    saveArticle,
+    delArticle,
+    updateArticle,
+    searchArticles,
+    getDetail
 } = require('../controllers/article');
 
 router.post('/get', async ctx => {
-    ctx.body = await get(ctx);
+    ctx.body = await getArticles(ctx);
 });
 
 router.post('/getByLabel', async ctx => {
-    ctx.body = await getByLabel(ctx);
+    ctx.body = await getArticlesByLabel(ctx);
 });
 
 router.post('/search', async ctx => {
-    ctx.body = await search(ctx);
+    ctx.body = await searchArticles(ctx);
 });
 
 router.post('/detail', async ctx => {
-    ctx.body = await detail(ctx);
+    ctx.body = await getDetail(ctx);
 });
 
 router.post('/save', async ctx => {
-    ctx.body = await save(ctx);
+    ctx.body = await saveArticle(ctx);
 });
 
 router.post('/update', async ctx => {
-    ctx.body = await update(ctx);
+    ctx.body = await updateArticle(ctx);
 });
 
 router.post('/delete', async ctx => {
-    ctx.body = await del(ctx);
+    ctx.body = await delArticle(ctx);
 });
 
 module.exports = router.routes();
